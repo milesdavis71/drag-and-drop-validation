@@ -1,0 +1,14 @@
+{
+  "name": "drag-and-drop-validation",
+  "source": "index.html",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel",
+    "check": "tsc --noEmit",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "2.4.0",
+    "parcel": "^2.4.0"
+  }
+}
