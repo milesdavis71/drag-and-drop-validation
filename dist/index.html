@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ProjectManager</title>
-    <link rel="stylesheet" href="/index.d4e506d2.css">
-    <link rel="stylesheet" href="/index.5190d013.css">
+
+    <link rel="stylesheet" href="/index.b2d9cf43.css">
     <script src="/index.6b815632.js" defer=""></script>
 </head>
 
@@ -17,16 +17,19 @@
 
     </template> -->
     <template id="project-input">
-        <i class="feature-box__icon icon-basic-compass" style="font-size: 5rem"></i>
 
     </template>
-    <template id="single-project">
+    <template id="drag-and-drop">
+
     </template>
     <template id="project-list">
     </template>
-    <div id="star"></div>
-    <div id="square"></div>
-    <div id="app"></div>
+    <div class="drag">
+        <div id="drag" class="star" draggable="true"></div>
+    </div>
+    <div class="drop">
+        <div id="drop" class="star"></div>
+    </div>
 </body>
 
 </html>

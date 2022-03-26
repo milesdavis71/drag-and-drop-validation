@@ -1,113 +1,74 @@
-// Autobind decorator
-function Autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
-  const origMethodValue = descriptor.value;
-  const modDescriptor: PropertyDescriptor = {
+interface DragAndDrop {
+  dragStartHandler(event: DragEvent): void;
+  dragEndHandler(event: DragEvent): void;
+
+  dragOverHandler(event: DragEvent): void;
+  dropHandler(event: DragEvent): void;
+  dragLeaveHandler(event: DragEvent): void;
+}
+
+function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+  const adjDescriptor: PropertyDescriptor = {
     configurable: true,
-    enumerable: false,
     get() {
-      const boundFn = origMethodValue.bind(this);
+      const boundFn = originalMethod.bind(this);
       return boundFn;
     },
   };
-  return modDescriptor;
+  return adjDescriptor;
 }
 
-class ProjectList {
-  templateElement: HTMLTemplateElement;
-  hostElement: HTMLDivElement;
-  element: HTMLElement;
-  constructor(private type: "active" | "finished") {
-    this.templateElement = document.getElementById(
-      "project-list"
-    )! as HTMLTemplateElement;
-    this.hostElement = document.getElementById("app")! as HTMLDivElement;
-
-    const importNode = document.importNode(this.templateElement.content, true);
-    this.element = importNode.firstElementChild as HTMLElement;
-    this.element.id = `${this.type}-projects`;
-    this.attach();
-    this.renderContent();
-  }
-
-  private renderContent() {
-    const listId = `${this.type}-project-list`;
-    this.element.querySelector("ul")!.id = listId;
-    this.element.querySelector("h2")!.textContent =
-      this.type.toUpperCase() + "PROJECTS";
-  }
-
-  private attach() {
-    this.hostElement.insertAdjacentElement("beforeend", this.element);
-  }
-}
-
-class ProjectInput {
-  templateElement: HTMLTemplateElement;
-  hostElement: HTMLDivElement;
-  element: HTMLFormElement;
-  titleInputElement: HTMLInputElement;
-  descriptionInputElement: HTMLInputElement;
-  peopleInputElement: HTMLInputElement;
+class Drag implements DragAndDrop {
+  dragElement: HTMLDivElement;
+  dragElementId: string;
+  dropElement: HTMLDivElement;
 
   constructor() {
-    this.templateElement = document.getElementById(
-      "project-input"
-    )! as HTMLTemplateElement;
-    this.hostElement = document.getElementById("app")! as HTMLDivElement;
+    this.dragElement = document.querySelector("#drag") as HTMLDivElement;
+    this.dragElementId = this.dragElement.id;
+    console.log(this.dragElementId);
 
-    const importNode = document.importNode(this.templateElement.content, true);
-    this.element = importNode.firstElementChild as HTMLFormElement;
-    this.element.id = "user-input";
-
-    this.titleInputElement = this.element.querySelector(
-      "#title"
-    ) as HTMLInputElement;
-    this.descriptionInputElement = this.element.querySelector(
-      "#description"
-    ) as HTMLInputElement;
-    this.peopleInputElement = this.element.querySelector(
-      "#people"
-    ) as HTMLInputElement;
+    this.dropElement = document.querySelector("#drop") as HTMLDivElement;
     this.configure();
-    this.attach();
   }
 
-  private gatherUserInput(): [string, string, number] | void {
-    const enteredTitle = this.titleInputElement.value;
-    const enteredDescription = this.descriptionInputElement.value;
-    const enteredPeople = this.peopleInputElement.value;
+  dragStartHandler(event: DragEvent): void {
+    event.dataTransfer!.setData("text/plain", this.dragElementId);
+    console.log(this.dragElementId);
 
-    return [enteredTitle, enteredDescription, +enteredPeople];
+    event.dataTransfer!.effectAllowed = "move";
   }
+  dragEndHandler(_: DragEvent): void {}
 
-  private clearInput() {
-    this.titleInputElement.value = "";
-    this.descriptionInputElement.value = "";
-    this.peopleInputElement.value = "";
-  }
-
-  @Autobind
-  submitHandler(event: Event) {
-    event.preventDefault();
-    const userInput = this.gatherUserInput();
-    if (Array.isArray(userInput)) {
-      const [title, desc, people] = userInput;
-      console.log(title, desc, people);
-      this.clearInput();
+  @autobind
+  dragOverHandler(event: DragEvent): void {
+    if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
+      event.preventDefault();
+      this.dropElement.classList.add("droppable");
     }
-
-    console.log(this.titleInputElement.value);
   }
 
-  private configure() {
-    this.element.addEventListener("submit", this.submitHandler);
+  @autobind
+  dropHandler(event: DragEvent): void {
+    event.preventDefault();
+    const dragId = event.dataTransfer!.getData("text/plain");
+    console.log(dragId);
+
+    dragId === "drag" ? console.log("huhu") : console.log("hihi");
   }
 
-  private attach() {
-    this.hostElement.insertAdjacentElement("afterbegin", this.element);
+  @autobind
+  dragLeaveHandler(_: DragEvent): void {}
+
+  configure() {
+    this.dragElement.addEventListener("dragstart", this.dragStartHandler);
+    this.dragElement.addEventListener("dragend", this.dragEndHandler);
+
+    this.dropElement.addEventListener("dragover", this.dragOverHandler);
+    this.dropElement.addEventListener("drop", this.dropHandler);
+    this.dropElement.addEventListener("dragleave", this.dragLeaveHandler);
   }
 }
 
-const prjInput = new ProjectInput();
-const activePrjList = new ProjectList("active");
-const finishedPrjList = new ProjectList("finished");
+const drag = new Drag();

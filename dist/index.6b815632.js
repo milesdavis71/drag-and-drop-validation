@@ -516,89 +516,59 @@ function hmrAcceptRun(bundle, id) {
 },{}],"kuM8f":[function(require,module,exports) {
 var _helpers = require("@swc/helpers");
 var _class;
-// Autobind decorator
-function Autobind(_, _2, descriptor) {
-    const origMethodValue = descriptor.value;
-    const modDescriptor = {
+function autobind(_, _2, descriptor) {
+    const originalMethod = descriptor.value;
+    const adjDescriptor = {
         configurable: true,
-        enumerable: false,
         get () {
-            const boundFn = origMethodValue.bind(this);
+            const boundFn = originalMethod.bind(this);
             return boundFn;
         }
     };
-    return modDescriptor;
+    return adjDescriptor;
 }
-class ProjectList {
-    constructor(type){
-        this.type = type;
-        this.templateElement = document.getElementById("project-list");
-        this.hostElement = document.getElementById("app");
-        const importNode = document.importNode(this.templateElement.content, true);
-        this.element = importNode.firstElementChild;
-        this.element.id = `${this.type}-projects`;
-        this.attach();
-        this.renderContent();
-    }
-    renderContent() {
-        const listId = `${this.type}-project-list`;
-        this.element.querySelector("ul").id = listId;
-        this.element.querySelector("h2").textContent = this.type.toUpperCase() + "PROJECTS";
-    }
-    attach() {
-        this.hostElement.insertAdjacentElement("beforeend", this.element);
-    }
-}
-let ProjectInput = (_class = class ProjectInput {
+let Drag = (_class = class Drag {
     constructor(){
-        this.templateElement = document.getElementById("project-input");
-        this.hostElement = document.getElementById("app");
-        const importNode = document.importNode(this.templateElement.content, true);
-        this.element = importNode.firstElementChild;
-        this.element.id = "user-input";
-        this.titleInputElement = this.element.querySelector("#title");
-        this.descriptionInputElement = this.element.querySelector("#description");
-        this.peopleInputElement = this.element.querySelector("#people");
+        this.dragElement = document.querySelector("#drag");
+        this.dragElementId = this.dragElement.id;
+        console.log(this.dragElementId);
+        this.dropElement = document.querySelector("#drop");
         this.configure();
-        this.attach();
     }
-    gatherUserInput() {
-        const enteredTitle = this.titleInputElement.value;
-        const enteredDescription = this.descriptionInputElement.value;
-        const enteredPeople = this.peopleInputElement.value;
-        return [
-            enteredTitle,
-            enteredDescription,
-            +enteredPeople
-        ];
+    dragStartHandler(event) {
+        event.dataTransfer.setData("text/plain", this.dragElementId);
+        console.log(this.dragElementId);
+        event.dataTransfer.effectAllowed = "move";
     }
-    clearInput() {
-        this.titleInputElement.value = "";
-        this.descriptionInputElement.value = "";
-        this.peopleInputElement.value = "";
-    }
-    submitHandler(event) {
-        event.preventDefault();
-        const userInput = this.gatherUserInput();
-        if (Array.isArray(userInput)) {
-            const [title, desc, people] = userInput;
-            console.log(title, desc, people);
-            this.clearInput();
+    dragEndHandler(_) {}
+    dragOverHandler(event) {
+        if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
+            event.preventDefault();
+            this.dropElement.classList.add("droppable");
         }
-        console.log(this.titleInputElement.value);
     }
+    dropHandler(event) {
+        event.preventDefault();
+        const dragId = event.dataTransfer.getData("text/plain");
+        console.log(dragId);
+        dragId === "drag" ? console.log("huhu") : console.log("hihi");
+    }
+    dragLeaveHandler(_) {}
     configure() {
-        this.element.addEventListener("submit", this.submitHandler);
+        this.dragElement.addEventListener("dragstart", this.dragStartHandler);
+        this.dragElement.addEventListener("dragend", this.dragEndHandler);
+        this.dropElement.addEventListener("dragover", this.dragOverHandler);
+        this.dropElement.addEventListener("drop", this.dropHandler);
+        this.dropElement.addEventListener("dragleave", this.dragLeaveHandler);
     }
-    attach() {
-        this.hostElement.insertAdjacentElement("afterbegin", this.element);
-    }
-}, _helpers.applyDecoratedDescriptor(_class.prototype, "submitHandler", [
-    Autobind
-], Object.getOwnPropertyDescriptor(_class.prototype, "submitHandler"), _class.prototype), _class);
-const prjInput = new ProjectInput();
-const activePrjList = new ProjectList("active");
-const finishedPrjList = new ProjectList("finished");
+}, _helpers.applyDecoratedDescriptor(_class.prototype, "dragOverHandler", [
+    autobind
+], Object.getOwnPropertyDescriptor(_class.prototype, "dragOverHandler"), _class.prototype), _helpers.applyDecoratedDescriptor(_class.prototype, "dropHandler", [
+    autobind
+], Object.getOwnPropertyDescriptor(_class.prototype, "dropHandler"), _class.prototype), _helpers.applyDecoratedDescriptor(_class.prototype, "dragLeaveHandler", [
+    autobind
+], Object.getOwnPropertyDescriptor(_class.prototype, "dragLeaveHandler"), _class.prototype), _class);
+const drag = new Drag();
 
 },{"@swc/helpers":"6Uysx"}],"6Uysx":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");

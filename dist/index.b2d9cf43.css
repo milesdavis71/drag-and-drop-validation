@@ -1,0 +1,52 @@
+*, :after, :before {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  box-sizing: border-box;
+  padding: 3rem;
+}
+
+.star {
+  width: 0;
+  height: 0;
+  border-bottom: .7em solid #fc0;
+  border-left: .3em solid #0000;
+  border-right: .3em solid #0000;
+  margin-bottom: 1.2em;
+  margin-left: .9em;
+  margin-right: .9em;
+  font-size: 24px;
+  display: inline-block;
+  position: relative;
+}
+
+.star:before, .star:after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-bottom: .7em solid #fc0;
+  border-left: 1em solid #0000;
+  border-right: 1em solid #0000;
+  display: block;
+  position: absolute;
+  top: .6em;
+  left: -1em;
+  transform: rotate(-35deg);
+}
+
+.star:after {
+  transform: rotate(35deg);
+}
+
+.droppable {
+  background: #ffe3ee;
+}
+
+/*# sourceMappingURL=index.b2d9cf43.css.map */
