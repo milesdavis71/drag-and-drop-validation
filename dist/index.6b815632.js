@@ -527,31 +527,63 @@ function autobind(_, _2, descriptor) {
     };
     return adjDescriptor;
 }
-let Drag = (_class = class Drag {
+class RenderLogin {
     constructor(){
-        this.dragElement = document.querySelector("#drag");
-        this.dragElementId = this.dragElement.id;
-        console.log(this.dragElementId);
-        this.dropElement = document.querySelector("#drop");
+        this.templateElement = document.getElementById("login");
+        this.hostElement = document.getElementById("app");
+        const importedNode = document.importNode(this.templateElement.content, true);
+        this.element = importedNode.firstElementChild;
+        this.renderLogin();
+    }
+    renderLogin() {
+        this.hostElement.insertAdjacentElement("afterbegin", this.element);
+    }
+}
+let DragAndDrop = (_class = // class RenderMain {
+//   templateElement: HTMLTemplateElement;
+//   hostElement: HTMLDivElement;
+//   element: HTMLElement;
+//   constructor() {
+//     this.templateElement = document.getElementById(
+//       "main"
+//     ) as HTMLTemplateElement;
+//     this.hostElement = document.getElementById("app") as HTMLDivElement;
+//     const importedNode = document.importNode(
+//       this.templateElement.content,
+//       true
+//     );
+//     this.element = importedNode.firstElementChild as HTMLElement;
+//     this.renderMainPage();
+//   }
+//   renderMainPage() {
+//     this.hostElement.insertAdjacentElement("afterbegin", this.element);
+//   }
+// }
+class DragAndDrop {
+    constructor(){
+        this.templateElement = document.getElementById("main");
+        this.hostElement = document.getElementById("app");
+        const importedNode = document.importNode(this.templateElement.content, true);
+        this.element = importedNode.firstElementChild;
+        this.dragElement = document.querySelector(".drag");
+        this.dropElement = document.querySelector(".drop");
         this.configure();
     }
     dragStartHandler(event) {
-        event.dataTransfer.setData("text/plain", this.dragElementId);
-        console.log(this.dragElementId);
+        event.dataTransfer.setData("text/plain", "drag");
         event.dataTransfer.effectAllowed = "move";
     }
     dragEndHandler(_) {}
     dragOverHandler(event) {
         if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
             event.preventDefault();
-            this.dropElement.classList.add("droppable");
+            this.dropElement.classList.add("drop--drop");
         }
     }
     dropHandler(event) {
         event.preventDefault();
         const dragId = event.dataTransfer.getData("text/plain");
-        console.log(dragId);
-        dragId === "drag" ? console.log("huhu") : console.log("hihi");
+        dragId === "drag" ? this.clearHostAndRenderMain() : alert("Hiba a betöltéssel");
     }
     dragLeaveHandler(_) {}
     configure() {
@@ -561,6 +593,10 @@ let Drag = (_class = class Drag {
         this.dropElement.addEventListener("drop", this.dropHandler);
         this.dropElement.addEventListener("dragleave", this.dragLeaveHandler);
     }
+    clearHostAndRenderMain() {
+        this.hostElement.innerHTML = "";
+        this.hostElement.insertAdjacentElement("afterbegin", this.element);
+    }
 }, _helpers.applyDecoratedDescriptor(_class.prototype, "dragOverHandler", [
     autobind
 ], Object.getOwnPropertyDescriptor(_class.prototype, "dragOverHandler"), _class.prototype), _helpers.applyDecoratedDescriptor(_class.prototype, "dropHandler", [
@@ -568,7 +604,8 @@ let Drag = (_class = class Drag {
 ], Object.getOwnPropertyDescriptor(_class.prototype, "dropHandler"), _class.prototype), _helpers.applyDecoratedDescriptor(_class.prototype, "dragLeaveHandler", [
     autobind
 ], Object.getOwnPropertyDescriptor(_class.prototype, "dragLeaveHandler"), _class.prototype), _class);
-const drag = new Drag();
+const renderLogin = new RenderLogin();
+const dragAndDrop = new DragAndDrop();
 
 },{"@swc/helpers":"6Uysx"}],"6Uysx":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");

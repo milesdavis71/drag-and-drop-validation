@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>ProjectManager</title>
-
+    <link rel="stylesheet" href="src/fontawesome/css/regular.min.css">
     <link rel="stylesheet" href="src/style.scss" />
     <script type="module" src="src/app.ts"></script>
 </head>
@@ -16,20 +16,25 @@
         <img src="./src/img/round.png" alt="">
 
     </template> -->
-    <template id="project-input">
+    <template id="login">
+        <div class="drag-drop">
+            <div class="drag">
+                <i id="drag" class="fa fa-key-skeleton" draggable="true"></i></td>
+            </div>
+            <div class="drop">
+                <i id="drop" class="fa fa-shield-keyhole"></i>
+            </div>
+        </div>
+
 
     </template>
-    <template id="drag-and-drop">
+    <template id="main">
+        <h1>Fő oldal</h1>
 
     </template>
-    <template id="project-list">
-    </template>
-    <div class="drag">
-        <div id="drag" class="star" draggable="true"></div>
-    </div>
-    <div class="drop">
-        <div id="drop" class="star"></div>
-    </div>
+
+    <div id="app"></div>
+
 </body>
 
 </html>

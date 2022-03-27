@@ -19,23 +19,80 @@ function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
   return adjDescriptor;
 }
 
-class Drag implements DragAndDrop {
-  dragElement: HTMLDivElement;
-  dragElementId: string;
-  dropElement: HTMLDivElement;
+class RenderLogin {
+  templateElement: HTMLTemplateElement;
+  hostElement: HTMLDivElement;
+  element: HTMLElement;
 
   constructor() {
-    this.dragElement = document.querySelector("#drag") as HTMLDivElement;
-    this.dragElementId = this.dragElement.id;
-    console.log(this.dragElementId);
+    this.templateElement = document.getElementById(
+      "login"
+    ) as HTMLTemplateElement;
+    this.hostElement = document.getElementById("app") as HTMLDivElement;
+    const importedNode = document.importNode(
+      this.templateElement.content,
+      true
+    );
 
-    this.dropElement = document.querySelector("#drop") as HTMLDivElement;
+    this.element = importedNode.firstElementChild as HTMLElement;
+
+    this.renderLogin();
+  }
+
+  renderLogin() {
+    this.hostElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
+
+// class RenderMain {
+//   templateElement: HTMLTemplateElement;
+//   hostElement: HTMLDivElement;
+//   element: HTMLElement;
+
+//   constructor() {
+//     this.templateElement = document.getElementById(
+//       "main"
+//     ) as HTMLTemplateElement;
+//     this.hostElement = document.getElementById("app") as HTMLDivElement;
+//     const importedNode = document.importNode(
+//       this.templateElement.content,
+//       true
+//     );
+
+//     this.element = importedNode.firstElementChild as HTMLElement;
+
+//     this.renderMainPage();
+//   }
+
+//   renderMainPage() {
+//     this.hostElement.insertAdjacentElement("afterbegin", this.element);
+//   }
+// }
+
+class DragAndDrop implements DragAndDrop {
+  templateElement: HTMLTemplateElement;
+  hostElement: HTMLDivElement;
+  element: HTMLElement;
+  dragElement: HTMLDivElement;
+  dropElement: HTMLDivElement;
+  constructor() {
+    this.templateElement = document.getElementById(
+      "main"
+    ) as HTMLTemplateElement;
+    this.hostElement = document.getElementById("app") as HTMLDivElement;
+    const importedNode = document.importNode(
+      this.templateElement.content,
+      true
+    );
+    this.element = importedNode.firstElementChild as HTMLElement;
+
+    this.dragElement = document.querySelector(".drag") as HTMLDivElement;
+    this.dropElement = document.querySelector(".drop") as HTMLDivElement;
     this.configure();
   }
 
   dragStartHandler(event: DragEvent): void {
-    event.dataTransfer!.setData("text/plain", this.dragElementId);
-    console.log(this.dragElementId);
+    event.dataTransfer!.setData("text/plain", "drag");
 
     event.dataTransfer!.effectAllowed = "move";
   }
@@ -45,7 +102,7 @@ class Drag implements DragAndDrop {
   dragOverHandler(event: DragEvent): void {
     if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
       event.preventDefault();
-      this.dropElement.classList.add("droppable");
+      this.dropElement.classList.add("drop--drop");
     }
   }
 
@@ -53,9 +110,10 @@ class Drag implements DragAndDrop {
   dropHandler(event: DragEvent): void {
     event.preventDefault();
     const dragId = event.dataTransfer!.getData("text/plain");
-    console.log(dragId);
 
-    dragId === "drag" ? console.log("huhu") : console.log("hihi");
+    dragId === "drag"
+      ? this.clearHostAndRenderMain()
+      : alert("Hiba a betöltéssel");
   }
 
   @autobind
@@ -69,6 +127,12 @@ class Drag implements DragAndDrop {
     this.dropElement.addEventListener("drop", this.dropHandler);
     this.dropElement.addEventListener("dragleave", this.dragLeaveHandler);
   }
+
+  clearHostAndRenderMain() {
+    this.hostElement.innerHTML = "";
+    this.hostElement.insertAdjacentElement("afterbegin", this.element);
+  }
 }
 
-const drag = new Drag();
+const renderLogin = new RenderLogin();
+const dragAndDrop = new DragAndDrop();

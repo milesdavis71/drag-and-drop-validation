@@ -1,0 +1,14 @@
+@font-face {
+  font-family: "Font Awesome 6 Pro";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("fa-regular-400.3bb1f2a4.woff2") format("woff2"), url("fa-regular-400.67112e48.woff") format("woff"), url("fa-regular-400.4d830346.ttf") format("truetype");
+}
+
+.fa-regular, .far {
+  font-family: "Font Awesome 6 Pro";
+  font-weight: 400;
+}
+
+/*# sourceMappingURL=index.9ffa65a8.css.map */
